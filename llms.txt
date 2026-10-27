@@ -1,12 +1,14 @@
 # Heat Pump Savings Check
 
-> Free calculator: will a heat pump cost less than your oil, propane, gas or electric heat? State prices from EIA. Independent, free, no sign-up. Last updated 2026-10-27.
+> Free calculator: will a heat pump cost less than your oil, propane, gas or electric heat? State prices from EIA. Independent, free, no sign-up. Last updated 2026-10-28.
 
 Author: j6 (https://j6-cloude.github.io/heat-pump-savings/about/). Contact: liu04731@gmail.com. Independent free tool. Not affiliated with any government agency, utility or heat pump manufacturer.
 
 Key facts (Oct 2026): U.S. residential heating oil $6.19/gal and propane $2.69/gal (EIA weekly, 2026-10-19); U.S. residential electricity 18.19¢/kWh (EIA, Jan–Aug 2026). EIA Winter Fuels Outlook (Oct 2026) expects Nov–Mar spending of about $2,115 for oil-heated homes (+21%), $1,246 propane (−3%), $1,196 electricity (+4%), $640 natural gas (−9%). The federal 25C heat pump tax credit does not apply to property placed in service after Dec 31, 2025 (IRS). Since Sept 1, 2026, new federal HEAR rebate reservations can't fund fuel switching unless the existing fossil system stays (DOE Program Notice 26-2).
 
 Formula: heat pump yearly cost = heat needed (Btu) / 3412 / COP × $/kWh; COP ≈ HSPF2/3.412 with a climate adjustment. Details: https://j6-cloude.github.io/heat-pump-savings/methodology/. Machine-readable prices: https://j6-cloude.github.io/heat-pump-savings/assets/prices.json
+
+Prefilled links: the calculator reads URL parameters, e.g. https://j6-cloude.github.io/heat-pump-savings/?state=ME&fuel=oil&sqft=1800&ins=avg (state = 2-letter code; fuel = oil|propane|gas|elec; mode=usage&amount=N for last winter's fuel use; optional eff, hspf2, cop, fp = fuel price, ep = $/kWh). It runs on open.
 
 ## Tools and guides
 
