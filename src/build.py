@@ -13,7 +13,7 @@ SITE = "Heat Pump Savings Check"
 TAGLINE = "Free calculator: will a heat pump cost less than your oil, propane, gas or electric heat? State prices from EIA"
 AUTHOR = os.environ.get("AUTHOR_NAME", "j6")
 CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "liu04731@gmail.com")
-UPDATED = "2026-10-27"; UPDATED_H = "October 27, 2026"
+UPDATED = "2026-10-28"; UPDATED_H = "October 28, 2026"
 GOOGLE_VERIFY = os.environ.get("GOOGLE_SITE_VERIFICATION", ""); BING_VERIFY = os.environ.get("BING_SITE_VERIFICATION", "")
 VERIFY_META = (f'<meta name="google-site-verification" content="{GOOGLE_VERIFY}">\n' if GOOGLE_VERIFY else "") + \
               (f'<meta name="msvalidate.01" content="{BING_VERIFY}">\n' if BING_VERIFY else "")
@@ -21,6 +21,12 @@ INDEXNOW_KEY = (ROOT / ".indexnow_key").read_text().strip()
 DATA = json.loads((ROOT / "data" / "prices.json").read_text())
 META, STATES = DATA["meta"], DATA["states"]
 BY = {s["abbr"]: s for s in STATES}
+# most common main heating fuel per state (EIA RECS 2020; src/build_heatfuel.py) -> calculator default on state pages
+HEATFUEL = json.loads((ROOT / "data" / "heat_fuel.json").read_text())
+for _s in STATES: _s["main_fuel"] = HEATFUEL[_s["abbr"]]["main"]; _s["fuel_shares"] = HEATFUEL[_s["abbr"]]["shares"]
+LOW_NEED = 2e6   # Btu/yr of delivered heat; below this we say "little heating needed" instead of showing $0 rows (Hawaii: 0 HDD)
+def low(r): return r["need"] < LOW_NEED
+LOWTXT = "Little heating needed"
 
 def u(p): return PREFIX + p
 
@@ -46,6 +52,10 @@ def calc(state, fuel, sqft=2000, ins="avg", hspf2=8.5, cop=0, eff=None, mode="si
 
 def money(x): return ("-" if x < 0 else "") + "${:,.0f}".format(abs(x))
 def diff(x): return f"{money(abs(x))} less" if x >= 0 else f"{money(abs(x))} more"
+def cost_cells(r, be=True):
+    """table cells: now / heat pump / difference (/ break-even); a single note when the climate needs almost no heat"""
+    if low(r): return f'<td colspan="{4 if be else 3}"><em>{LOWTXT}</em> ({"warm climate: heating costs are close to $0" if r["now"] < 50 else "warm climate: about " + money(r["now"]) + " a year either way"})</td>'
+    return f"<td>{money(r['now'])}</td><td>{money(r['hp'])}</td><td>{diff(r['save'])}</td>" + (f"<td>${r['breakeven']:.3f}</td>" if be else "")
 def strip(s): return re.sub(r"<[^>]+>", "", s)
 
 # ---------- sources (all opened and checked Oct 27, 2026) ----------
@@ -66,6 +76,7 @@ S_ESASHP = ("ENERGY STAR: Air-source heat pumps", "https://www.energystar.gov/pr
 S_ESMINI = ("ENERGY STAR: Ductless heating and cooling (mini-splits)", "https://www.energystar.gov/products/ductless_heating_cooling")
 S_NEEP = ("NEEP: Cold-climate air-source heat pump product list", "https://neep.org/heating-electrification/ccashp-specification-product-list")
 S_AHRI = ("AHRI Directory of certified product performance", "https://www.ahridirectory.org/")
+S_RECS = ("EIA Residential Energy Consumption Survey (RECS) 2020: main space heating fuel by state", "https://www.eia.gov/consumption/residential/data/2020/state/pdf/State%20Space%20Heating%20Fuels.pdf")
 PRICE_SRC = [S_EPM, S_NG, S_SHOPP, S_WFO, S_BTU, S_HDD]
 
 # ---------- layout ----------
@@ -87,8 +98,9 @@ def faq_ld(faqs):
 def faq_html(faqs): return '<section id="faq"><h2>Questions people ask</h2>' + "".join(f"<h3>{q}</h3><p>{a}</p>" for q, a in faqs) + "</section>"
 
 PAGES = []
-def page(path, title, desc, body, ld=None, faqs=None, h1=None, sources=None, hero=None, crumbs=None, scripts=False):
+def page(path, title, desc, body, ld=None, faqs=None, h1=None, sources=None, hero=None, crumbs=None, scripts=False, og="/assets/og/og.png", og_alt=None):
     url = BASE + path
+    og_alt = og_alt or f"{SITE}: free heat pump savings calculator with EIA prices for all 50 states"
     graph = [ORG, {"@type": "WebSite", "@id": BASE + "/#site", "url": BASE + "/", "name": SITE, "publisher": {"@id": BASE + "/#org"}},
              {"@type": "WebPage", "@id": url, "url": url, "name": title, "description": desc, "dateModified": UPDATED, "inLanguage": "en-US",
               "isPartOf": {"@id": BASE + "/#site"}, "author": {"@type": "Person", "name": AUTHOR, "url": BASE + "/about/"}}]
@@ -114,7 +126,8 @@ def page(path, title, desc, body, ld=None, faqs=None, h1=None, sources=None, her
 <meta name="author" content="{AUTHOR}">
 <meta property="og:type" content="website"><meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}"><meta property="og:url" content="{url}"><meta property="og:site_name" content="{SITE}">
-<meta name="twitter:card" content="summary"><meta name="theme-color" content="#c8551f">
+<meta property="og:image" content="{BASE}{og}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{html.escape(og_alt)}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{html.escape(title)}"><meta name="twitter:description" content="{html.escape(desc)}"><meta name="twitter:image" content="{BASE}{og}"><meta name="twitter:image:alt" content="{html.escape(og_alt)}"><meta name="theme-color" content="#c8551f">
 {VERIFY_META}<link rel="alternate" type="text/plain" title="llms.txt" href="{u('/llms.txt')}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c8551f'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="{u('/assets/style.css')}">
@@ -149,10 +162,10 @@ def calc_form(state="MA", fuel="oil", title="Your numbers"):
 <div class="seg" role="radiogroup"><label><input type="radio" name="mode" value="size" checked> Use home size</label><label><input type="radio" name="mode" value="usage"> I know last winter's fuel use</label></div>
 <div class="grid m-size"><label>Home size (sq ft)<input name="sqft" type="number" inputmode="numeric" min="200" max="20000" value="2000"></label>
 <label>Insulation<select name="ins"><option value="tight">Good (newer or upgraded)</option><option value="avg" selected>Average</option><option value="leaky">Drafty (older, little insulation)</option></select></label></div>
-<div class="grid m-usage" hidden><label>Fuel used in a year (<span class="unit">gallons</span>)<input name="amount" type="number" inputmode="decimal" min="0" value="700"><span class="hint">From your bills or delivery slips, for heating only.</span></label></div>
+<div class="grid m-usage" hidden><label><span>Fuel used in a year (<span class="unit">gallons</span>)</span><input name="amount" type="number" inputmode="decimal" min="0" value="700"><span class="hint">From your bills or delivery slips, for heating only.</span></label></div>
 <details class="adv" open><summary>Prices and heat pump (prefilled for your state)</summary>
 <div class="grid">
-<label>Fuel price ($ <span class="punit">per gallon</span>)<input name="fuelPrice" type="number" inputmode="decimal" step="any" min="0"></label>
+<label><span>Fuel price ($ <span class="punit">per gallon</span>)</span><input name="fuelPrice" type="number" inputmode="decimal" step="any" min="0"></label>
 <label>Electricity price ($ per kWh)<input name="elecPrice" type="number" inputmode="decimal" step="any" min="0"></label>
 <label>Current system efficiency (%)<input name="eff" type="number" inputmode="numeric" min="40" max="100"><span class="hint">Oil 83, gas/propane 90 by default. Older systems: try 75–80.</span></label>
 <label>Heat pump HSPF2<input name="hspf2" type="number" inputmode="decimal" step="0.1" min="5" max="14" value="8.5"><span class="hint">On the spec sheet or AHRI certificate.</span></label>
@@ -164,6 +177,18 @@ def calc_form(state="MA", fuel="oil", title="Your numbers"):
 <div class="kpi"><span>Heat pump COP used</span><b class="k-cop"></b></div><div class="kpi"><span>Break-even power price</span><b class="k-be"></b></div>
 <div class="kpi"><span>Cost per million Btu of heat (now vs heat pump)</span><b class="k-per"></b></div><div class="kpi"><span>Heat needed per year</span><b class="k-need"></b></div></div>
 <p class="small">Break-even: if your electricity costs less than this per kWh, the heat pump is cheaper to run. Running cost only; it does not include buying or installing the system.</p></div>
+<section class="share" hidden aria-label="Share your result"><h3>Share your result</h3>
+<p class="small">Your card is made in your browser. Nothing you type is sent to us. The link fills in these same numbers for whoever opens it.</p>
+<img class="share-img" alt="Your heat pump savings result card" width="1200" height="630">
+<div class="share-btns">
+<a class="sbtn s-dl" download="heat-pump-savings.png" href="#">Download image</a>
+<button type="button" class="sbtn s-native" hidden>Share…</button>
+<a class="sbtn s-fb" href="#" target="_blank" rel="noopener">Facebook</a>
+<a class="sbtn s-sms" href="#">Text message</a>
+<a class="sbtn s-wa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+<button type="button" class="sbtn s-copy">Copy link</button>
+</div><p class="small s-status" role="status"></p>
+<label class="s-link-l">Link to these numbers<input class="s-link" type="text" readonly></label></section>
 <div class="affil-slot" data-slot="quotes" aria-hidden="true"></div>
 </form>"""
 
@@ -217,9 +242,14 @@ for s in STATES:
     cop = res["oil"]["cop"]; er = rank("elec", s)
     pdiff = (s["elec"] / META["elec_us"] - 1) * 100
     win = [FNAME[f].lower() for f in ("oil", "propane", "gas", "elec") if res[f]["save"] > 0.1 * res[f]["now"]]
-    rows = "".join(f"<tr><td>{FNAME[f]}</td><td>{money(res[f]['now'])}</td><td>{money(res[f]['hp'])}</td><td>{diff(res[f]['save'])}</td><td>${res[f]['breakeven']:.3f}</td></tr>" for f in ("oil", "propane", "gas", "elec"))
+    rows = "".join(f"<tr><td>{FNAME[f]}</td>{cost_cells(res[f])}</tr>" for f in ("oil", "propane", "gas", "elec"))
+    mf = s["main_fuel"]; msh = s["fuel_shares"][mf]
+    mf_name = {"oil": "heating oil", "propane": "propane", "gas": "natural gas", "elec": "electricity (this includes homes that already have a heat pump)"}[mf]
+    low_s = low(res["oil"])
     cold = "very cold" if s["hdd"] >= 7000 else "cold" if s["hdd"] >= 5000 else "mild" if s["hdd"] >= 3000 else "warm"
-    body = f"""<div class="answer"><p><strong>Short answer for {s['name']}:</strong> at this winter's prices, a heat pump {('costs less to run than ' + (' and '.join(win) if len(win)<3 else ', '.join(win[:-1]) + ' and ' + win[-1])) if win else 'does not clearly beat any fuel on running cost'} in a typical 2,000 sq ft home.
+    short = (f"{s['name']} has a warm climate, so most homes need very little heating. Heating costs are small whichever system you use; a heat pump matters more here for cooling." if low_s else
+             "at this winter's prices, a heat pump " + ((('costs less to run than ' + (' and '.join(win) if len(win)<3 else ', '.join(win[:-1]) + ' and ' + win[-1])) if win else 'does not clearly beat any fuel on running cost') + " in a typical 2,000 sq ft home."))
+    body = f"""<div class="answer"><p><strong>Short answer for {s['name']}:</strong> {short}
 Electricity here averages <strong>{s['elec']:.2f}¢ per kWh</strong>, {abs(pdiff):.0f}% {"above" if pdiff > 0 else "below"} the U.S. average of {META['elec_us']:.2f}¢ (#{er} cheapest of 51).</p></div>
 <h2>{s['name']} heating prices this winter</h2>
 <table><thead><tr><th>Fuel</th><th>Price</th><th>Cost per million Btu of heat</th><th>Source</th></tr></thead><tbody>
@@ -231,21 +261,24 @@ Electricity here averages <strong>{s['elec']:.2f}¢ per kWh</strong>, {abs(pdiff
 <h2>Yearly cost: your fuel vs a heat pump</h2>
 <p>For a 2,000 sq ft home with average insulation in {s['name']}'s {cold} climate ({s['hdd']:,} heating degree days a year), with a heat pump rated HSPF2 8.5 (we use COP {cop:.2f} here):</p>
 <table><thead><tr><th>Heating now</th><th>Now, per year</th><th>Heat pump, per year</th><th>Heat pump costs</th><th>Break-even power price</th></tr></thead><tbody>{rows}</tbody></table>
-<p class="small">Cheapest to run today in this example: <strong>{('a heat pump' if res[best]['now'] > res['oil']['hp'] else FNAME[best].lower())}</strong>. Break-even means: if you pay less than this per kWh, the heat pump is cheaper than that fuel.</p>
-{calc_form(s['abbr'], 'oil' if s['oil_src']=='state' else 'propane', 'Run it for your home in ' + s['name'])}
+<p class="small">{'' if low_s else f"Cheapest to run today in this example: <strong>{('a heat pump' if res[best]['now'] > res['oil']['hp'] else FNAME[best].lower())}</strong>. "}Break-even means: if you pay less than this per kWh, the heat pump is cheaper than that fuel.</p>
+<p>The calculator below starts with <strong>{mf_name}</strong>, the most common main heating fuel in {s['name']} ({msh}% of homes, <a href="{S_RECS[1]}" rel="noopener">EIA RECS 2020</a>). Change it to match your home.</p>
+{calc_form(s['abbr'], mf, 'Run it for your home in ' + s['name'])}
 <h2>Rebates in {s['name']}</h2>
 <p>The federal 25C tax credit for heat pumps ended for equipment placed in service after Dec 31, 2025 (<a href="{S_IRSFAQ[1]}" rel="noopener">IRS</a>). Federal Home Energy Rebates (HEAR/HOMES) are run by each state, and many states have not opened. Since Sept 1, 2026, new HEAR rebates can't pay to replace oil, propane or gas heat unless the old system stays in place (<a href="{S_PN262[1]}" rel="noopener">DOE Program Notice 26-2</a>). Check your state energy office and your electric utility. <a href="{u('/heat-pump-rebates-2026/')}">Full 2026 rebate guide</a>.</p>
 <div class="affil-slot" data-slot="state-installers" aria-hidden="true"></div>
 <p><a href="{u('/states/')}">See all states</a></p>"""
     page(f"/state/{s['slug']}/", f"Heat Pump vs Oil, Propane and Gas in {s['name']} (2026 Prices)",
          f"Will a heat pump save money in {s['name']}? This winter's EIA prices: electricity {s['elec']:.1f}¢/kWh, oil ${s['oil']:.2f}, propane ${s['propane']:.2f}, gas ${s['gas_therm']:.2f}/therm. Free calculator.",
-         body, h1=f"Heat pump savings in {s['name']}", crumbs=[("States", "/states/")], scripts=True, sources=PRICE_SRC + [S_IRSFAQ, S_PN262],
-         faqs=[(f"Is a heat pump cheaper than oil in {s['name']}?", f"In our example home, oil costs about {money(res['oil']['now'])} a year and a heat pump about {money(res['oil']['hp'])}. The heat pump wins if your electricity costs less than ${res['oil']['breakeven']:.3f} per kWh."),
-               (f"Is a heat pump cheaper than natural gas in {s['name']}?", f"In our example, gas costs about {money(res['gas']['now'])} a year and a heat pump about {money(res['gas']['hp'])}. The break-even electricity price is ${res['gas']['breakeven']:.3f} per kWh."),
+         body, h1=f"Heat pump savings in {s['name']}", crumbs=[("States", "/states/")], scripts=True, sources=PRICE_SRC + [S_RECS, S_IRSFAQ, S_PN262],
+         og=f"/assets/og/state/{s['slug']}.png", og_alt=f"Heat pump vs oil, propane, gas and electric heat in {s['name']}: yearly running cost at 2026 EIA prices",
+         faqs=[(f"Is a heat pump cheaper than oil in {s['name']}?", (f"{s['name']} needs very little heating, so the yearly difference is small either way. The heat pump is cheaper to run if your electricity costs less than ${res['oil']['breakeven']:.3f} per kWh." if low_s else f"In our example home, oil costs about {money(res['oil']['now'])} a year and a heat pump about {money(res['oil']['hp'])}. The heat pump wins if your electricity costs less than ${res['oil']['breakeven']:.3f} per kWh.")),
+               (f"Is a heat pump cheaper than natural gas in {s['name']}?", (f"With so little heating needed in {s['name']}, the yearly difference is small. The break-even electricity price is ${res['gas']['breakeven']:.3f} per kWh." if low_s else f"In our example, gas costs about {money(res['gas']['now'])} a year and a heat pump about {money(res['gas']['hp'])}. The break-even electricity price is ${res['gas']['breakeven']:.3f} per kWh.")),
+               (f"What is the most common way to heat a home in {s['name']}?", f"{mf_name[0].upper() + mf_name[1:]}: {msh}% of homes use it as their main heating fuel, per EIA's 2020 Residential Energy Consumption Survey."),
                (f"What does electricity cost in {s['name']}?", f"{s['elec']:.2f} cents per kWh on average for homes, January–August 2026 (EIA Electric Power Monthly, Table 5.6.B). Your utility's rate may differ.")])
 
 lis = "".join(f'<li><a href="{u("/state/" + s["slug"] + "/")}">{s["name"]}</a></li>' for s in STATES)
-tbl = "".join(f'<tr><td><a href="{u("/state/" + s["slug"] + "/")}">{s["name"]}</a></td><td>{s["elec"]:.2f}¢</td><td>${s["oil"]:.2f}{"" if s["oil_src"]=="state" else "*"}</td><td>${s["propane"]:.2f}{"" if s["propane_src"]=="state" else "*"}</td><td>${s["gas_therm"]:.2f}</td><td>{diff(calc(s["abbr"],"oil")["save"])}</td></tr>' for s in STATES)
+tbl = "".join(f'<tr><td><a href="{u("/state/" + s["slug"] + "/")}">{s["name"]}</a></td><td>{s["elec"]:.2f}¢</td><td>${s["oil"]:.2f}{"" if s["oil_src"]=="state" else "*"}</td><td>${s["propane"]:.2f}{"" if s["propane_src"]=="state" else "*"}</td><td>${s["gas_therm"]:.2f}</td><td>{LOWTXT if low(calc(s["abbr"],"oil")) else diff(calc(s["abbr"],"oil")["save"])}</td></tr>' for s in STATES)
 page("/states/", "Heat Pump Savings by State: 2026 Electricity, Oil, Propane and Gas Prices", "Compare heat pump running costs in all 50 states and DC with this winter's EIA prices for electricity, heating oil, propane and natural gas.",
      f"""<p>Pick your state for a full page with prices, yearly costs and a calculator set for your state.</p><ul class="statelist">{lis}</ul>
 <h2>All states at a glance</h2><table><thead><tr><th>State</th><th>Electricity (per kWh)</th><th>Heating oil (per gal)</th><th>Propane (per gal)</th><th>Gas (per therm)</th><th>Heat pump vs oil, per year*</th></tr></thead><tbody>{tbl}</tbody></table>
@@ -254,10 +287,10 @@ page("/states/", "Heat Pump Savings by State: 2026 Electricity, Oil, Propane and
 
 # ---------- fuel comparison pages ----------
 def fuel_page(fuel, slug, title, h1, desc, intro, faqs):
-    rows = sorted(STATES, key=lambda s: -calc(s["abbr"], fuel)["save"])
-    t = "".join(f'<tr><td><a href="{u("/state/" + s["slug"] + "/")}">{s["name"]}</a></td><td>{money(calc(s["abbr"],fuel)["now"])}</td><td>{money(calc(s["abbr"],fuel)["hp"])}</td><td>{diff(calc(s["abbr"],fuel)["save"])}</td><td>${calc(s["abbr"],fuel)["breakeven"]:.3f}</td></tr>' for s in rows)
+    rows = sorted(STATES, key=lambda s: (low(calc(s["abbr"], fuel)), -calc(s["abbr"], fuel)["save"]))
+    t = "".join(f'<tr><td><a href="{u("/state/" + s["slug"] + "/")}">{s["name"]}</a></td>{cost_cells(calc(s["abbr"],fuel))}</tr>' for s in rows)
     body = f"""{intro}{calc_form('MA' if fuel in ('oil','elec') else 'PA' if fuel=='propane' else 'OH', fuel, 'Check your home')}{price_line()}
-<h2>{FNAME[fuel]} vs heat pump in every state</h2><p>Example: 2,000 sq ft, average insulation, heat pump HSPF2 8.5. Sorted by savings.</p>
+<h2>{FNAME[fuel]} vs heat pump in every state</h2><p>Example: 2,000 sq ft, average insulation, heat pump HSPF2 8.5. Sorted by savings. States with almost no heating season are listed last.</p>
 <table><thead><tr><th>State</th><th>{FNAME[fuel]}, per year</th><th>Heat pump, per year</th><th>Heat pump costs</th><th>Break-even power price</th></tr></thead><tbody>{t}</tbody></table>{GLOSS}"""
     page(slug, title, desc, body, h1=h1, faqs=faqs, scripts=True, sources=PRICE_SRC + [S_ESASHP, S_NEEP])
 
@@ -379,7 +412,7 @@ page("/methodology/", "How the Heat Pump Savings Calculator Works", "Formulas, p
      h1="How it works", sources=PRICE_SRC + [S_NORM])
 page("/sources/", "Sources and Data", "Every data source used by Heat Pump Savings Check, with dates.",
      f"""<p>All prices come from free public downloads from the U.S. Energy Information Administration. No API keys or paid data. We re-check when EIA publishes new data.</p>{price_line()}
-<ul>{''.join(f'<li><a href="{x}" rel="noopener">{t}</a></li>' for t, x in PRICE_SRC + [S_NORM, S_IRSFAQ, S_25C, S_DOE, S_PN262, S_NASEO, S_ESHEAR, S_ESASHP, S_ESMINI, S_NEEP, S_AHRI])}</ul>
+<ul>{''.join(f'<li><a href="{x}" rel="noopener">{t}</a></li>' for t, x in PRICE_SRC + [S_NORM, S_RECS, S_IRSFAQ, S_25C, S_DOE, S_PN262, S_NASEO, S_ESHEAR, S_ESASHP, S_ESMINI, S_NEEP, S_AHRI])}</ul>
 <p>Hawaii, Alaska and DC climate use NOAA 1991–2020 airport station normals (Honolulu, Anchorage, Washington Reagan) because the statewide series doesn't cover them. All other states use NOAA nClimDiv statewide heating degree days, 1991–2020 average.</p>""", h1="Sources and data")
 page("/about/", f"About {SITE}", f"Who runs {SITE} and how we keep it accurate.",
      f"""<p>{SITE} is a free, independent calculator that helps people see if a heat pump would lower their heating bill. It uses public data from the EIA, NOAA, the IRS and the U.S. Department of Energy.</p>
@@ -387,7 +420,8 @@ page("/about/", f"About {SITE}", f"Who runs {SITE} and how we keep it accurate."
 <h2>Editorial policy</h2><ul><li>Official sources first. Each page lists its sources and its update date.</li><li>We show our formulas and assumptions.</li><li>No paid placements in results. If we ever add affiliate links or ads, they will be clearly labeled.</li>
 <li>Corrections: <a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>.</li></ul><h2>Author</h2><p>Built by {AUTHOR}. Not a licensed engineer, contractor or tax adviser. Nothing here is professional advice.</p>""", h1=f"About {SITE}")
 page("/contact/", f"Contact {SITE}", "Send corrections or questions.", f'<p>Email: <a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a></p><p>We can\'t give quotes, recommend installers or give tax advice.</p>', h1="Contact")
-page("/privacy/", "Privacy Policy", f"{SITE} privacy policy.", f"""<p>Last updated {UPDATED_H}.</p><h2>Calculator data</h2><p>All math runs in your browser. We don't receive or store what you type.</p>
+page("/privacy/", "Privacy Policy", f"{SITE} privacy policy.", f"""<p>Last updated {UPDATED_H}.</p><h2>Calculator data</h2><p>All math runs in your browser. We don't receive or store what you type. We use no cookies, analytics or trackers.</p>
+<h2>Share cards and links</h2><p>The result image is drawn in your browser. The share link puts your calculator inputs (state, fuel, home size, prices) in the web address so the calculator can fill them in for whoever opens it. The share buttons are plain links to Facebook, WhatsApp or your text app; we don't load their scripts. Once you share, that service's own privacy policy applies.</p>
 <h2>Ads and cookies</h2><p>We don't show ads today. If we add them later (for example Google AdSense), third-party vendors including Google may use cookies to serve ads based on your visits to this and other sites. You'll be able to opt out at <a href="https://www.google.com/settings/ads">Google Ads Settings</a>. We will update this page first.</p>
 <h2>Affiliate links</h2><p>None today. If added, they will be labeled.</p><h2>Contact</h2><p><a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a></p>""", h1="Privacy Policy")
 page("/disclaimer/", "Disclaimer", "Estimates only; not professional, tax or financial advice.",
@@ -411,7 +445,8 @@ llms = (f"# {SITE}\n\n> {TAGLINE}. Independent, free, no sign-up. Last updated {
         f"Key facts (Oct 2026): U.S. residential heating oil ${META['oil_us']:.2f}/gal and propane ${META['propane_us']:.2f}/gal (EIA weekly, {META['oil_date']}); "
         f"U.S. residential electricity {META['elec_us']:.2f}¢/kWh (EIA, Jan–Aug 2026). EIA Winter Fuels Outlook (Oct 2026) expects Nov–Mar spending of about $2,115 for oil-heated homes (+21%), $1,246 propane (−3%), $1,196 electricity (+4%), $640 natural gas (−9%). "
         f"The federal 25C heat pump tax credit does not apply to property placed in service after Dec 31, 2025 (IRS). Since Sept 1, 2026, new federal HEAR rebate reservations can't fund fuel switching unless the existing fossil system stays (DOE Program Notice 26-2).\n\n"
-        f"Formula: heat pump yearly cost = heat needed (Btu) / 3412 / COP × $/kWh; COP ≈ HSPF2/3.412 with a climate adjustment. Details: {BASE}/methodology/. Machine-readable prices: {BASE}/assets/prices.json\n\n## Tools and guides\n\n" +
+        f"Formula: heat pump yearly cost = heat needed (Btu) / 3412 / COP × $/kWh; COP ≈ HSPF2/3.412 with a climate adjustment. Details: {BASE}/methodology/. Machine-readable prices: {BASE}/assets/prices.json\n\n"
+        f"Prefilled links: the calculator reads URL parameters, e.g. {BASE}/?state=ME&fuel=oil&sqft=1800&ins=avg (state = 2-letter code; fuel = oil|propane|gas|elec; mode=usage&amount=N for last winter's fuel use; optional eff, hspf2, cop, fp = fuel price, ep = $/kWh). It runs on open.\n\n## Tools and guides\n\n" +
         "".join(f"- [{t}]({BASE}{p}): {d}\n" for p, t, d, _ in core) +
         "\n## State pages\n\n" + "".join(f"- [{s['name']}]({BASE}/state/{s['slug']}/): electricity {s['elec']:.2f}¢/kWh, oil ${s['oil']:.2f}, propane ${s['propane']:.2f}, gas ${s['gas_therm']:.2f}/therm\n" for s in STATES) +
         "\n## About\n\n" + "".join(f"- [{t}]({BASE}{p}): {d}\n" for p, t, d, _ in PAGES if p in trust) +
@@ -419,5 +454,7 @@ llms = (f"# {SITE}\n\n> {TAGLINE}. Independent, free, no sign-up. Last updated {
 (OUT / "llms.txt").write_text(llms)
 (OUT / "llms-full.txt").write_text(f"# {SITE} – full text\n\nSource: {BASE}/ · Updated {UPDATED}\n\n" + "\n\n".join(f"## {t}\nURL: {BASE}{p}\n\n" + " ".join(b.split()) for p, t, d, b in PAGES))
 (OUT / f"{INDEXNOW_KEY}.txt").write_text(INDEXNOW_KEY)
+import og_images
+og_images.build(OUT / "assets" / "og", STATES, META, calc, money, low, BASE)
 (OUT / ".nojekyll").write_text("")
 print(f"Built {len(PAGES)} pages to {OUT} for {BASE} (prefix {PREFIX!r})")

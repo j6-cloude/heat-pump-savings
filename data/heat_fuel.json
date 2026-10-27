@@ -1,0 +1,461 @@
+{
+ "AL": {
+  "shares": {
+   "elec": 64,
+   "gas": 28,
+   "propane": 5,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "AK": {
+  "shares": {
+   "elec": 13,
+   "gas": 57,
+   "propane": 0,
+   "oil": 24
+  },
+  "main": "gas"
+ },
+ "AZ": {
+  "shares": {
+   "elec": 51,
+   "gas": 36,
+   "propane": 2,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "AR": {
+  "shares": {
+   "elec": 46,
+   "gas": 43,
+   "propane": 4,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "CA": {
+  "shares": {
+   "elec": 20,
+   "gas": 64,
+   "propane": 2,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "CO": {
+  "shares": {
+   "elec": 16,
+   "gas": 76,
+   "propane": 4,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "CT": {
+  "shares": {
+   "elec": 19,
+   "gas": 36,
+   "propane": 4,
+   "oil": 39
+  },
+  "main": "oil"
+ },
+ "DE": {
+  "shares": {
+   "elec": 40,
+   "gas": 41,
+   "propane": 9,
+   "oil": 8
+  },
+  "main": "gas"
+ },
+ "DC": {
+  "shares": {
+   "elec": 41,
+   "gas": 56,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "FL": {
+  "shares": {
+   "elec": 66,
+   "gas": 5,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "GA": {
+  "shares": {
+   "elec": 46,
+   "gas": 47,
+   "propane": 5,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "HI": {
+  "shares": {
+   "elec": 5,
+   "gas": 0,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "ID": {
+  "shares": {
+   "elec": 26,
+   "gas": 61,
+   "propane": 6,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "IL": {
+  "shares": {
+   "elec": 17,
+   "gas": 78,
+   "propane": 4,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "IN": {
+  "shares": {
+   "elec": 26,
+   "gas": 65,
+   "propane": 7,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "IA": {
+  "shares": {
+   "elec": 16,
+   "gas": 71,
+   "propane": 13,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "KS": {
+  "shares": {
+   "elec": 21,
+   "gas": 71,
+   "propane": 6,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "KY": {
+  "shares": {
+   "elec": 49,
+   "gas": 43,
+   "propane": 4,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "LA": {
+  "shares": {
+   "elec": 62,
+   "gas": 33,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "ME": {
+  "shares": {
+   "elec": 10,
+   "gas": 17,
+   "propane": 16,
+   "oil": 49
+  },
+  "main": "oil"
+ },
+ "MD": {
+  "shares": {
+   "elec": 41,
+   "gas": 49,
+   "propane": 0,
+   "oil": 7
+  },
+  "main": "gas"
+ },
+ "MA": {
+  "shares": {
+   "elec": 17,
+   "gas": 53,
+   "propane": 3,
+   "oil": 24
+  },
+  "main": "gas"
+ },
+ "MI": {
+  "shares": {
+   "elec": 10,
+   "gas": 77,
+   "propane": 9,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "MN": {
+  "shares": {
+   "elec": 14,
+   "gas": 68,
+   "propane": 15,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "MS": {
+  "shares": {
+   "elec": 56,
+   "gas": 32,
+   "propane": 10,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "MO": {
+  "shares": {
+   "elec": 31,
+   "gas": 59,
+   "propane": 7,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "MT": {
+  "shares": {
+   "elec": 24,
+   "gas": 59,
+   "propane": 9,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "NE": {
+  "shares": {
+   "elec": 24,
+   "gas": 69,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "NV": {
+  "shares": {
+   "elec": 23,
+   "gas": 68,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "NH": {
+  "shares": {
+   "elec": 9,
+   "gas": 28,
+   "propane": 15,
+   "oil": 40
+  },
+  "main": "oil"
+ },
+ "NJ": {
+  "shares": {
+   "elec": 16,
+   "gas": 75,
+   "propane": 0,
+   "oil": 7
+  },
+  "main": "gas"
+ },
+ "NM": {
+  "shares": {
+   "elec": 13,
+   "gas": 76,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "NY": {
+  "shares": {
+   "elec": 16,
+   "gas": 61,
+   "propane": 4,
+   "oil": 17
+  },
+  "main": "gas"
+ },
+ "NC": {
+  "shares": {
+   "elec": 62,
+   "gas": 29,
+   "propane": 4,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "ND": {
+  "shares": {
+   "elec": 34,
+   "gas": 46,
+   "propane": 15,
+   "oil": 4
+  },
+  "main": "gas"
+ },
+ "OH": {
+  "shares": {
+   "elec": 23,
+   "gas": 64,
+   "propane": 7,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "OK": {
+  "shares": {
+   "elec": 39,
+   "gas": 52,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "OR": {
+  "shares": {
+   "elec": 45,
+   "gas": 41,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "PA": {
+  "shares": {
+   "elec": 26,
+   "gas": 52,
+   "propane": 6,
+   "oil": 13
+  },
+  "main": "gas"
+ },
+ "RI": {
+  "shares": {
+   "elec": 13,
+   "gas": 53,
+   "propane": 0,
+   "oil": 31
+  },
+  "main": "gas"
+ },
+ "SC": {
+  "shares": {
+   "elec": 64,
+   "gas": 28,
+   "propane": 5,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "SD": {
+  "shares": {
+   "elec": 25,
+   "gas": 58,
+   "propane": 14,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "TN": {
+  "shares": {
+   "elec": 60,
+   "gas": 35,
+   "propane": 3,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "TX": {
+  "shares": {
+   "elec": 51,
+   "gas": 42,
+   "propane": 2,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "UT": {
+  "shares": {
+   "elec": 13,
+   "gas": 86,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "VT": {
+  "shares": {
+   "elec": 6,
+   "gas": 21,
+   "propane": 13,
+   "oil": 46
+  },
+  "main": "oil"
+ },
+ "VA": {
+  "shares": {
+   "elec": 50,
+   "gas": 36,
+   "propane": 5,
+   "oil": 4
+  },
+  "main": "elec"
+ },
+ "WA": {
+  "shares": {
+   "elec": 55,
+   "gas": 37,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "WV": {
+  "shares": {
+   "elec": 45,
+   "gas": 43,
+   "propane": 0,
+   "oil": 0
+  },
+  "main": "elec"
+ },
+ "WI": {
+  "shares": {
+   "elec": 14,
+   "gas": 71,
+   "propane": 10,
+   "oil": 0
+  },
+  "main": "gas"
+ },
+ "WY": {
+  "shares": {
+   "elec": 18,
+   "gas": 71,
+   "propane": 8,
+   "oil": 0
+  },
+  "main": "gas"
+ }
+}
