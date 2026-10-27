@@ -1,0 +1,91 @@
+# Heat Pump Savings Check
+
+> Free calculator: will a heat pump cost less than your oil, propane, gas or electric heat? State prices from EIA. Independent, free, no sign-up. Last updated 2026-10-27.
+
+Author: j6 (https://j6-cloude.github.io/heat-pump-savings/about/). Contact: liu04731@gmail.com. Independent free tool. Not affiliated with any government agency, utility or heat pump manufacturer.
+
+Key facts (Oct 2026): U.S. residential heating oil $6.19/gal and propane $2.69/gal (EIA weekly, 2026-10-19); U.S. residential electricity 18.19¢/kWh (EIA, Jan–Aug 2026). EIA Winter Fuels Outlook (Oct 2026) expects Nov–Mar spending of about $2,115 for oil-heated homes (+21%), $1,246 propane (−3%), $1,196 electricity (+4%), $640 natural gas (−9%). The federal 25C heat pump tax credit does not apply to property placed in service after Dec 31, 2025 (IRS). Since Sept 1, 2026, new federal HEAR rebate reservations can't fund fuel switching unless the existing fossil system stays (DOE Program Notice 26-2).
+
+Formula: heat pump yearly cost = heat needed (Btu) / 3412 / COP × $/kWh; COP ≈ HSPF2/3.412 with a climate adjustment. Details: https://j6-cloude.github.io/heat-pump-savings/methodology/. Machine-readable prices: https://j6-cloude.github.io/heat-pump-savings/assets/prices.json
+
+## Tools and guides
+
+- [Heat Pump Savings Calculator 2026: Oil, Propane, Gas vs Heat Pump by State](https://j6-cloude.github.io/heat-pump-savings/): Free heat pump savings calculator with this winter's EIA prices for all 50 states. Compare heating oil, propane, natural gas or electric heat to a heat pump.
+- [Heat Pump Savings by State: 2026 Electricity, Oil, Propane and Gas Prices](https://j6-cloude.github.io/heat-pump-savings/states/): Compare heat pump running costs in all 50 states and DC with this winter's EIA prices for electricity, heating oil, propane and natural gas.
+- [Heating Oil vs Heat Pump 2026: Cost Calculator by State](https://j6-cloude.github.io/heat-pump-savings/heating-oil-vs-heat-pump/): Heating oil is $6.19 a gallon this month (EIA). Compare oil heat to a heat pump in your state with this winter's prices.
+- [Propane vs Heat Pump 2026: Which Costs Less to Heat Your Home?](https://j6-cloude.github.io/heat-pump-savings/propane-vs-heat-pump/): Propane is $2.69 a gallon (EIA U.S. average). Compare propane heat to a heat pump in your state with this winter's prices.
+- [Natural Gas vs Heat Pump 2026: Running Cost by State](https://j6-cloude.github.io/heat-pump-savings/natural-gas-vs-heat-pump/): Is a heat pump cheaper than a gas furnace? Compare with this winter's EIA gas and electricity prices for your state.
+- [Electric Baseboard vs Heat Pump: How Much Can You Save? (2026)](https://j6-cloude.github.io/heat-pump-savings/electric-baseboard-vs-heat-pump/): Switching from electric baseboard or resistance heat to a heat pump cuts heating power use by more than half. See savings in your state.
+- [Heat Pump Rebates 2026: What's Left After the 25C Tax Credit Ended](https://j6-cloude.github.io/heat-pump-savings/heat-pump-rebates-2026/): The 25C heat pump tax credit ended Dec 31, 2025. What federal HEAR rebates, state and utility programs still cover in 2026, with official sources.
+- [Heat Pump Tax Credit 2026: Did 25C End? (Yes — Here's What Remains)](https://j6-cloude.github.io/heat-pump-savings/heat-pump-tax-credit-2026/): The 25C heat pump tax credit ended for systems placed in service after Dec 31, 2025, per the IRS. What it was, who can still claim it, and what replaced it.
+- [Heat Pump Payback Calculator: How Long Until It Pays for Itself?](https://j6-cloude.github.io/heat-pump-savings/heat-pump-cost/): Enter your heat pump quote, rebates and yearly savings to see the payback time in years. Get your yearly savings from our free state calculator.
+- [Mini Split Size Calculator: What Size Heat Pump Do I Need?](https://j6-cloude.github.io/heat-pump-savings/mini-split-size-calculator/): Rough heat pump and mini-split size (Btu/hr and tons) from your space, insulation and coldest winter temperature. Free, plain-language.
+- [Portable and Window Heat Pumps: Running Cost vs a Space Heater](https://j6-cloude.github.io/heat-pump-savings/portable-heat-pump/): Do portable or window heat pumps save money over a space heater? Simple math with your state's 2026 electricity price.
+- [HSPF2 to COP Converter (and What a Good HSPF2 Is)](https://j6-cloude.github.io/heat-pump-savings/hspf2-to-cop/): Convert a heat pump's HSPF2 rating to an average COP. Plain-language guide to HSPF2, HSPF and cold-climate performance.
+- [How the Heat Pump Savings Calculator Works](https://j6-cloude.github.io/heat-pump-savings/methodology/): Formulas, prices, climate data and assumptions behind Heat Pump Savings Check.
+- [Sources and Data](https://j6-cloude.github.io/heat-pump-savings/sources/): Every data source used by Heat Pump Savings Check, with dates.
+
+## State pages
+
+- [Alabama](https://j6-cloude.github.io/heat-pump-savings/state/alabama/): electricity 16.51¢/kWh, oil $6.19, propane $3.57, gas $1.67/therm
+- [Alaska](https://j6-cloude.github.io/heat-pump-savings/state/alaska/): electricity 27.32¢/kWh, oil $6.19, propane $2.69, gas $1.26/therm
+- [Arizona](https://j6-cloude.github.io/heat-pump-savings/state/arizona/): electricity 15.36¢/kWh, oil $6.19, propane $2.69, gas $1.78/therm
+- [Arkansas](https://j6-cloude.github.io/heat-pump-savings/state/arkansas/): electricity 13.74¢/kWh, oil $6.19, propane $2.60, gas $2.08/therm
+- [California](https://j6-cloude.github.io/heat-pump-savings/state/california/): electricity 32.58¢/kWh, oil $6.19, propane $2.69, gas $2.16/therm
+- [Colorado](https://j6-cloude.github.io/heat-pump-savings/state/colorado/): electricity 16.80¢/kWh, oil $6.19, propane $2.36, gas $1.05/therm
+- [Connecticut](https://j6-cloude.github.io/heat-pump-savings/state/connecticut/): electricity 27.47¢/kWh, oil $6.15, propane $4.23, gas $1.69/therm
+- [Delaware](https://j6-cloude.github.io/heat-pump-savings/state/delaware/): electricity 17.98¢/kWh, oil $6.43, propane $3.75, gas $1.65/therm
+- [District of Columbia](https://j6-cloude.github.io/heat-pump-savings/state/district-of-columbia/): electricity 24.86¢/kWh, oil $6.30, propane $3.58, gas $1.58/therm
+- [Florida](https://j6-cloude.github.io/heat-pump-savings/state/florida/): electricity 15.32¢/kWh, oil $5.93, propane $4.93, gas $2.37/therm
+- [Georgia](https://j6-cloude.github.io/heat-pump-savings/state/georgia/): electricity 15.48¢/kWh, oil $5.93, propane $3.21, gas $1.62/therm
+- [Hawaii](https://j6-cloude.github.io/heat-pump-savings/state/hawaii/): electricity 46.41¢/kWh, oil $6.19, propane $2.69, gas $5.40/therm
+- [Idaho](https://j6-cloude.github.io/heat-pump-savings/state/idaho/): electricity 13.02¢/kWh, oil $6.19, propane $2.59, gas $0.69/therm
+- [Illinois](https://j6-cloude.github.io/heat-pump-savings/state/illinois/): electricity 19.23¢/kWh, oil $5.91, propane $1.94, gas $1.03/therm
+- [Indiana](https://j6-cloude.github.io/heat-pump-savings/state/indiana/): electricity 17.04¢/kWh, oil $6.05, propane $2.56, gas $1.07/therm
+- [Iowa](https://j6-cloude.github.io/heat-pump-savings/state/iowa/): electricity 14.55¢/kWh, oil $5.82, propane $1.70, gas $0.98/therm
+- [Kansas](https://j6-cloude.github.io/heat-pump-savings/state/kansas/): electricity 15.26¢/kWh, oil $5.91, propane $2.07, gas $1.34/therm
+- [Kentucky](https://j6-cloude.github.io/heat-pump-savings/state/kentucky/): electricity 14.20¢/kWh, oil $5.89, propane $2.84, gas $1.41/therm
+- [Louisiana](https://j6-cloude.github.io/heat-pump-savings/state/louisiana/): electricity 13.27¢/kWh, oil $6.19, propane $3.03, gas $1.81/therm
+- [Maine](https://j6-cloude.github.io/heat-pump-savings/state/maine/): electricity 30.23¢/kWh, oil $6.03, propane $3.71, gas $1.74/therm
+- [Maryland](https://j6-cloude.github.io/heat-pump-savings/state/maryland/): electricity 21.31¢/kWh, oil $6.37, propane $3.80, gas $1.61/therm
+- [Massachusetts](https://j6-cloude.github.io/heat-pump-savings/state/massachusetts/): electricity 30.19¢/kWh, oil $6.12, propane $3.66, gas $2.46/therm
+- [Michigan](https://j6-cloude.github.io/heat-pump-savings/state/michigan/): electricity 21.73¢/kWh, oil $5.81, propane $2.43, gas $1.03/therm
+- [Minnesota](https://j6-cloude.github.io/heat-pump-savings/state/minnesota/): electricity 16.44¢/kWh, oil $5.92, propane $2.01, gas $1.04/therm
+- [Mississippi](https://j6-cloude.github.io/heat-pump-savings/state/mississippi/): electricity 15.06¢/kWh, oil $6.19, propane $3.14, gas $1.51/therm
+- [Missouri](https://j6-cloude.github.io/heat-pump-savings/state/missouri/): electricity 14.28¢/kWh, oil $5.91, propane $2.18, gas $1.46/therm
+- [Montana](https://j6-cloude.github.io/heat-pump-savings/state/montana/): electricity 14.13¢/kWh, oil $6.19, propane $2.17, gas $0.85/therm
+- [Nebraska](https://j6-cloude.github.io/heat-pump-savings/state/nebraska/): electricity 12.92¢/kWh, oil $5.63, propane $1.78, gas $1.10/therm
+- [Nevada](https://j6-cloude.github.io/heat-pump-savings/state/nevada/): electricity 13.36¢/kWh, oil $6.19, propane $2.69, gas $0.98/therm
+- [New Hampshire](https://j6-cloude.github.io/heat-pump-savings/state/new-hampshire/): electricity 26.91¢/kWh, oil $6.03, propane $3.84, gas $1.86/therm
+- [New Jersey](https://j6-cloude.github.io/heat-pump-savings/state/new-jersey/): electricity 24.09¢/kWh, oil $6.38, propane $4.08, gas $1.38/therm
+- [New Mexico](https://j6-cloude.github.io/heat-pump-savings/state/new-mexico/): electricity 15.34¢/kWh, oil $6.19, propane $3.03, gas $1.01/therm
+- [New York](https://j6-cloude.github.io/heat-pump-savings/state/new-york/): electricity 29.26¢/kWh, oil $6.42, propane $3.73, gas $1.65/therm
+- [North Carolina](https://j6-cloude.github.io/heat-pump-savings/state/north-carolina/): electricity 14.94¢/kWh, oil $5.83, propane $3.61, gas $1.78/therm
+- [North Dakota](https://j6-cloude.github.io/heat-pump-savings/state/north-dakota/): electricity 12.46¢/kWh, oil $5.91, propane $1.65, gas $0.85/therm
+- [Ohio](https://j6-cloude.github.io/heat-pump-savings/state/ohio/): electricity 18.81¢/kWh, oil $6.03, propane $2.65, gas $1.20/therm
+- [Oklahoma](https://j6-cloude.github.io/heat-pump-savings/state/oklahoma/): electricity 13.81¢/kWh, oil $5.91, propane $2.35, gas $1.38/therm
+- [Oregon](https://j6-cloude.github.io/heat-pump-savings/state/oregon/): electricity 15.46¢/kWh, oil $6.19, propane $2.69, gas $1.60/therm
+- [Pennsylvania](https://j6-cloude.github.io/heat-pump-savings/state/pennsylvania/): electricity 21.13¢/kWh, oil $6.07, propane $3.16, gas $1.44/therm
+- [Rhode Island](https://j6-cloude.github.io/heat-pump-savings/state/rhode-island/): electricity 29.05¢/kWh, oil $6.38, propane $4.17, gas $2.15/therm
+- [South Carolina](https://j6-cloude.github.io/heat-pump-savings/state/south-carolina/): electricity 15.90¢/kWh, oil $5.93, propane $3.66, gas $1.64/therm
+- [South Dakota](https://j6-cloude.github.io/heat-pump-savings/state/south-dakota/): electricity 14.58¢/kWh, oil $5.91, propane $1.87, gas $0.94/therm
+- [Tennessee](https://j6-cloude.github.io/heat-pump-savings/state/tennessee/): electricity 13.80¢/kWh, oil $5.91, propane $3.22, gas $1.24/therm
+- [Texas](https://j6-cloude.github.io/heat-pump-savings/state/texas/): electricity 16.03¢/kWh, oil $6.19, propane $3.14, gas $2.02/therm
+- [Utah](https://j6-cloude.github.io/heat-pump-savings/state/utah/): electricity 13.19¢/kWh, oil $6.19, propane $2.33, gas $1.05/therm
+- [Vermont](https://j6-cloude.github.io/heat-pump-savings/state/vermont/): electricity 23.93¢/kWh, oil $6.10, propane $3.88, gas $1.62/therm
+- [Virginia](https://j6-cloude.github.io/heat-pump-savings/state/virginia/): electricity 16.95¢/kWh, oil $6.00, propane $3.76, gas $1.62/therm
+- [Washington](https://j6-cloude.github.io/heat-pump-savings/state/washington/): electricity 14.42¢/kWh, oil $6.19, propane $2.69, gas $1.61/therm
+- [West Virginia](https://j6-cloude.github.io/heat-pump-savings/state/west-virginia/): electricity 15.58¢/kWh, oil $5.93, propane $3.66, gas $1.33/therm
+- [Wisconsin](https://j6-cloude.github.io/heat-pump-savings/state/wisconsin/): electricity 19.05¢/kWh, oil $5.79, propane $1.94, gas $1.10/therm
+- [Wyoming](https://j6-cloude.github.io/heat-pump-savings/state/wyoming/): electricity 14.01¢/kWh, oil $6.19, propane $2.34, gas $1.06/therm
+
+## About
+
+- [About Heat Pump Savings Check](https://j6-cloude.github.io/heat-pump-savings/about/): Who runs Heat Pump Savings Check and how we keep it accurate.
+- [Contact Heat Pump Savings Check](https://j6-cloude.github.io/heat-pump-savings/contact/): Send corrections or questions.
+- [Privacy Policy](https://j6-cloude.github.io/heat-pump-savings/privacy/): Heat Pump Savings Check privacy policy.
+- [Disclaimer](https://j6-cloude.github.io/heat-pump-savings/disclaimer/): Estimates only; not professional, tax or financial advice.
+
+## Optional
+
+- [Full text of all pages](https://j6-cloude.github.io/heat-pump-savings/llms-full.txt)
