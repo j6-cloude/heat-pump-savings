@@ -58,39 +58,69 @@
   }
   function rrect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
   var FF = 'system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif';
+  // playful tiers (positive savings only); names are just for fun
+  function tierFor(save) { return save >= 750 ? { name: "Heat Pump Hero", emoji: "\u2605\u2605\u2605" } : save >= 300 ? { name: "Winter Winner", emoji: "\u2605\u2605" } : save >= 50 ? { name: "Cozy Saver", emoji: "\u2605" } : null; }
+  var CONF = ["#c8551f", "#e8a33d", "#0f6b63", "#f2c94c", "#e07a5f", "#7fb8a4"];
+  function rng(seed) { return function () { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }; }
+  function star(x, cx, cy, r) { x.beginPath(); for (var i = 0; i < 10; i++) { var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; x.lineTo(cx + rr * Math.cos(a), cy + rr * Math.sin(a)); } x.closePath(); }
   function drawCard(c, info) {
-    c.width = 1200; c.height = 630; var x = c.getContext("2d");
+    c.width = 1200; c.height = 630; var x = c.getContext("2d"), fest = info.kind === "save";
+    // warm background with a soft glow
     x.fillStyle = "#fbf7f1"; x.fillRect(0, 0, 1200, 630);
-    x.fillStyle = "#c8551f"; x.fillRect(0, 0, 14, 630);
+    var g = x.createRadialGradient(330, 250, 40, 330, 250, 720);
+    g.addColorStop(0, fest ? "#fff1dc" : "#f4efe6"); g.addColorStop(1, "#fbf7f1"); x.fillStyle = g; x.fillRect(0, 0, 1200, 630);
+    if (fest) { // confetti sprinkles kept to the edges, away from the text
+      var R = rng(42 + (info.big.length * 7));
+      var ok = function (px, py) { return py < 26 || py > 620 || px < 34 || px > 1168 || (px > 1010 && py < 190) || (px > 590 && px < 660 && py < 100) || (px > 700 && py > 560); };
+      for (var i = 0; i < 260; i++) {
+        var px = R() * 1200, py = R() * 630;
+        if (!ok(px, py)) continue;
+        x.save(); x.translate(px, py); x.rotate(R() * Math.PI); x.fillStyle = CONF[i % CONF.length]; x.globalAlpha = 0.85;
+        var k = R(); if (k < 0.45) x.fillRect(-9, -4, 18, 8); else if (k < 0.75) { x.beginPath(); x.arc(0, 0, 5 + R() * 3, 0, 7); x.fill(); } else { star(x, 0, 0, 9 + R() * 4); x.fill(); }
+        x.restore();
+      }
+    }
     // logo + name
     x.save(); x.translate(64, 44); x.scale(56 / 32, 56 / 32); rrect(x, 0, 0, 32, 32, 9); x.fillStyle = "#c8551f"; x.fill();
     if (window.Path2D) { x.fillStyle = "#fff"; x.fill(new Path2D("M16 7c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-7 1 2 2 3 3 3-1-3-1-5 0-7z")); } x.restore();
     x.textBaseline = "alphabetic"; x.fillStyle = "#1f2328"; x.font = "800 32px " + FF; x.fillText("Heat Pump Savings Check", 136, 84);
-    x.fillStyle = "#575d66"; x.font = "500 26px " + FF; x.fillText(info.state, 1136 - x.measureText(info.state).width, 84);
-    // headline
-    x.fillStyle = "#1f2328"; x.font = "700 40px " + FF; x.fillText(info.line1, 64, 172);
-    x.fillStyle = info.color; x.font = "800 104px " + FF; x.fillText(info.big, 60, 282);
-    x.fillStyle = "#575d66"; x.font = "500 28px " + FF;
-    wrap(x, info.sub, 1072).slice(0, 2).forEach(function (l, i) { x.fillText(l, 64, 334 + i * 38); });
-    // assumptions box
-    x.fillStyle = "#eaf5f3"; rrect(x, 64, 396, 1072, 148, 22); x.fill();
-    x.fillStyle = "#0f6b63"; x.font = "800 20px " + FF; x.fillText("ASSUMPTIONS", 92, 432);
-    x.fillStyle = "#1f2328"; x.font = "500 23px " + FF;
-    wrap(x, info.assume, 1016).slice(0, 3).forEach(function (l, i) { x.fillText(l, 92, 466 + i * 31); });
-    // footer
-    x.fillStyle = "#0f6b63"; x.font = "800 28px " + FF; x.fillText(SITE_URL, 64, 596);
-    x.fillStyle = "#575d66"; x.font = "500 21px " + FF; var t = "Estimate of running cost only · not a quote";
-    x.fillText(t, 1136 - x.measureText(t).width, 595);
+    // tier sticker (tilted, rounded: playful, not a seal) or state label
+    if (info.tier) {
+      x.save(); x.translate(968, 92); x.rotate(-0.06);
+      x.font = "800 30px " + FF; var tw = x.measureText(info.tier.name).width, w = tw + 104;
+      x.fillStyle = "rgba(200,85,31,.18)"; rrect(x, -w / 2 + 5, -33, w, 70, 35); x.fill();
+      x.fillStyle = "#e8a33d"; rrect(x, -w / 2, -38, w, 70, 35); x.fill();
+      x.fillStyle = "#fff"; star(x, -w / 2 + 40, -3, 17); x.fill();
+      x.fillStyle = "#3d2100"; x.fillText(info.tier.name, -w / 2 + 68, 8);
+      x.restore();
+      x.fillStyle = "#575d66"; x.font = "600 22px " + FF; var tl = "Our badge \u00b7 " + info.state; x.fillText(tl, 968 - x.measureText(tl).width / 2, 160);
+    } else { x.fillStyle = "#575d66"; x.font = "500 26px " + FF; x.fillText(info.state, 1136 - x.measureText(info.state).width, 84); }
+    // hero
+    x.fillStyle = "#1f2328"; x.font = "800 46px " + FF; x.fillText(info.line1, 64, 196);
+    var bs = 112; x.font = "900 " + bs + "px " + FF; while (x.measureText(info.big).width > 1072 && bs > 60) { bs -= 4; x.font = "900 " + bs + "px " + FF; }
+    if (fest) { x.fillStyle = "rgba(232,163,61,.35)"; rrect(x, 54, 300 - bs * 0.32, x.measureText(info.big).width + 22, bs * 0.34, 10); x.fill(); }
+    x.fillStyle = info.color; x.fillText(info.big, 60, 300);
+    x.fillStyle = "#575d66"; x.font = "500 27px " + FF;
+    wrap(x, info.sub, 1072).slice(0, 2).forEach(function (l, i) { x.fillText(l, 64, 354 + i * 35); });
+    // assumptions
+    x.fillStyle = "#eaf5f3"; rrect(x, 64, 408, 1072, 132, 22); x.fill();
+    x.fillStyle = "#0f6b63"; x.font = "800 19px " + FF; x.fillText("OUR NUMBERS", 90, 440);
+    x.fillStyle = "#1f2328"; x.font = "500 21px " + FF;
+    wrap(x, info.assume, 1020).slice(0, 3).forEach(function (l, i) { x.fillText(l, 90, 470 + i * 28); });
+    // footer: URL + plain disclaimer
+    x.fillStyle = "#0f6b63"; x.font = "800 27px " + FF; x.fillText(SITE_URL, 64, 578);
+    x.fillStyle = "#575d66"; x.font = "500 19px " + FF;
+    x.fillText("Estimate only, based on your inputs and EIA prices; not an official document.", 64, 608);
   }
   function cardInfo(o, r, touched) {
     var s = st(o.state), low = r.need < LOW_NEED, fn = FNAME[o.fuel];
-    var info = { state: s.name };
-    if (low) { info.line1 = "In this climate, our home needs"; info.big = "Little heating"; info.color = "#6b4500";
+    var info = { state: s.name, kind: "even" };
+    if (low) { info.line1 = "In our climate, our home needs"; info.big = "Little heating"; info.color = "#6b4500";
       info.sub = (r.now < 50 && r.hp < 50) ? "Heating costs are close to $0 a year either way. A heat pump here is mostly about efficient cooling." : "Heating costs about " + m(r.now) + " a year now and about " + m(r.hp) + " with a heat pump, so the difference is small."; }
-    else if (r.save >= 0) { info.line1 = "Switching to a heat pump could save our home"; info.big = m(r.save) + "/year"; info.color = "#0b5a3c";
-      info.sub = "Heating with " + fn + " now: about " + m(r.now) + "/yr. Heat pump: about " + m(r.hp) + "/yr in electricity."; }
-    else { info.line1 = "A heat pump could cost our home"; info.big = m(-r.save) + " more/yr"; info.color = "#8a2d10";
-      info.sub = "Heating with " + fn + " now: about " + m(r.now) + "/yr. Heat pump: about " + m(r.hp) + "/yr in electricity."; }
+    else if (r.save >= 0) { info.kind = r.save >= 50 ? "save" : "even"; info.tier = tierFor(r.save); info.line1 = "Our home could save"; info.big = m(r.save) + "/year"; info.color = "#0b5a3c";
+      info.sub = "by switching from " + fn + " (about " + m(r.now) + "/yr) to a heat pump (about " + m(r.hp) + "/yr in electricity)."; }
+    else { info.kind = "cost"; info.line1 = "Good to know: a heat pump could cost us"; info.big = m(-r.save) + " more/yr"; info.color = "#8a2d10";
+      info.sub = "At today's prices " + fn + " is cheaper to run here (about " + m(r.now) + "/yr vs " + m(r.hp) + "/yr). Better insulation or a higher-efficiency heat pump can change that."; }
     var size = o.mode === "usage" ? n0(o.amount) + " " + UNIT[o.fuel] + " of " + (o.fuel === "elec" ? "electricity" : o.fuel === "gas" ? "gas" : o.fuel) + " last winter" : n0(o.sqft) + " sq ft, " + INSNAME[o.ins];
     var effTxt = o.fuel === "elec" ? "" : " at " + o.eff + "% efficiency";
     var pd = (touched.fuelPrice ? "your price" : fuelPriceDate(o.fuel));
@@ -112,7 +142,27 @@
   function shareText(o, r) {
     var s = st(o.state);
     if (r.need < LOW_NEED) return "Our home in " + s.name + " needs little heating, so a heat pump changes the heating bill very little. Free estimate:";
-    return (r.save >= 0 ? "Switching to a heat pump could save our home " + m(r.save) + " a year vs " + FNAME[o.fuel] : "A heat pump could cost our home " + m(-r.save) + " more a year than " + FNAME[o.fuel]) + " in " + s.name + " (free estimate, EIA prices):";
+    return (r.save >= 0 ? (tierFor(r.save) ? tierFor(r.save).name + "! " : "") + "Our home could save " + m(r.save) + " a year by switching from " + FNAME[o.fuel] + " to a heat pump" : "A heat pump could cost our home " + m(-r.save) + " more a year than " + FNAME[o.fuel]) + " in " + s.name + " (free estimate, EIA prices):";
+  }
+  // page confetti: only for a savings result, only after a prefilled link or user input, never with reduced motion
+  function reducedMotion() { return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  var confettiOn = false;
+  function confetti() {
+    if (confettiOn || reducedMotion() || !window.requestAnimationFrame) return;
+    var cv = document.createElement("canvas"), W = window.innerWidth, H = window.innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.className = "confetti"; cv.setAttribute("aria-hidden", "true"); cv.width = W * dpr; cv.height = H * dpr;
+    document.body.appendChild(cv); confettiOn = true;
+    var x = cv.getContext("2d"); x.scale(dpr, dpr);
+    var P = [], n = Math.min(140, Math.round(W / 4)), t0 = null, DUR = 2600;
+    for (var i = 0; i < n; i++) P.push({ x: Math.random() * W, y: -20 - Math.random() * H * 0.5, vx: (Math.random() - 0.5) * 2.4, vy: 2 + Math.random() * 3.5, r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.3, s: 6 + Math.random() * 7, c: CONF[i % CONF.length], k: Math.random() });
+    function f(ts) {
+      if (t0 === null) t0 = ts; var t = ts - t0; x.clearRect(0, 0, W, H);
+      x.globalAlpha = t > DUR - 600 ? Math.max(0, (DUR - t) / 600) : 1;
+      P.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.r += p.vr; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c;
+        if (p.k < 0.6) x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); else { x.beginPath(); x.arc(0, 0, p.s / 3, 0, 7); x.fill(); } x.restore(); });
+      if (t < DUR) requestAnimationFrame(f); else { cv.remove(); confettiOn = false; }
+    }
+    requestAnimationFrame(f);
   }
   document.querySelectorAll(".hp-calc").forEach(function (root, idx) {
     var sel = $(root, "state");
@@ -129,12 +179,18 @@
       root.querySelectorAll(".unit").forEach(function (e) { e.textContent = UNIT[f]; });
       root.querySelector(".punit").textContent = f === "gas" ? "per therm" : f === "elec" ? "per kWh" : "per gallon";
     }
-    var share = root.querySelector(".share"), canvas = document.createElement("canvas"), blob = null, blobUrl = null, timer = null, last = null;
+    var share = root.querySelector(".share"), canvas = document.createElement("canvas"), blob = null, blobUrl = null, timer = null, last = null, lastTier = null, armed = false;
+    if (!root.querySelector(".tier") && root.querySelector(".out .verdict")) { var te = document.createElement("p"); te.className = "tier"; te.hidden = true; root.querySelector(".out .verdict").after(te); }
     function renderShare() {
       if (!share || !last) return;
       var o = last.o, r = last.r, url = shareUrl(o, touched), text = shareText(o, r);
-      drawCard(canvas, cardInfo(o, r, touched));
-      share.hidden = false;
+      var info = cardInfo(o, r, touched); drawCard(canvas, info);
+      share.hidden = false; share.dataset.kind = info.kind;
+      var tierEl = root.querySelector(".tier");
+      if (tierEl) { tierEl.hidden = !info.tier; tierEl.textContent = info.tier ? "\u2605 Your badge: " + info.tier.name + " \u2605" : ""; }
+      var key = info.tier ? info.tier.name : "";
+      if (key && key !== lastTier && armed) confetti();
+      lastTier = key; root.dataset.tier = key;
       share.querySelector(".s-link").value = url;
       share.querySelector(".s-fb").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
       share.querySelector(".s-sms").href = "sms:?&body=" + encodeURIComponent(text + " " + url);
@@ -191,11 +247,12 @@
     }
     sel.addEventListener("change", function () { prefill(true); run(); });
     $(root, "fuel").addEventListener("change", function () { touched.eff = false; touched.fuelPrice = false; prefill(false); run(); });
+    root.addEventListener("input", function () { armed = true; }, true); root.addEventListener("change", function () { armed = true; }, true);
     root.addEventListener("input", run); root.addEventListener("change", run);
     // apply URL params to the first calculator on the page
     var P = PARAMS;
     if (idx === 0 && Object.keys(P).length) {
-      usedParams = true;
+      usedParams = true; armed = true;
       if (P.state) sel.value = P.state;
       if (P.fuel) $(root, "fuel").value = P.fuel;
       prefill(true);
